@@ -1,0 +1,32 @@
+syntax="proto3";
+
+package todo.v1;
+
+option go_package = "github.com/LHaosss/todo-vue-grpc/proto/gen/go/todo/v1;todov1";
+
+import "todo.proto";
+
+service TodoService {
+    rpc GetTodos(GetTodosRequest) returns(GetTodosResponse);
+    rpc DeleteTodo(DeleteTodoRequest) returns(DeleteTodoResponse);
+    rpc AddTodo(AddTodoRequest) returns(AddTodoResponse);
+}
+
+message GetTodosRequest {}
+
+message GetTodosResponse {
+    repeated Todo todos = 1;
+}
+
+message DeleteTodoRequest {
+    string index = 1;
+    
+}
+
+message DeleteTodoResponse {}
+
+message AddTodoRequest {
+    Todo todo = 1;
+}
+
+message AddTodoResponse {}
