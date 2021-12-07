@@ -1,5 +1,7 @@
 # Todo-vue-grpc
 
+![image-20211207141441940](/Users/kaiwen/Library/Application Support/typora-user-images/image-20211207141441940.png)
+
 ## 定义proto文件
 
 ## 通过proto文件生成go文件以及grpc调用相关文件（如果使用go-micro框架，还需要生成micro相关文件）
@@ -61,7 +63,72 @@ protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=p
 > protoc --go_out=./proto/gen/todo/todo/v1 --go_opt=paths=source_relative proto/idl/todo/v1/todo_api.proto proto/idl/todo/v1/todo.proto
 > ```
 
+### 生成micro相关文件
 
+#### 下载所需插件：
+
+```
+go get github.com/micro/protoc-gen-micro/v2
+```
+
+#### 生成命令
+
+```
+protoc --proto_path=$GOPATH/src:. --micro_out=. --go_out=. greeter.proto
+```
+
+### 命令：
+
+```
+#!/usr/bin/env bash
+set -eo pipefail
+
+CUR=$(dirname $0)
+
+GEN_OUT_DIR=${CUR}/gen
+
+GEN_TOOL=${CUR}/protoc_gen_plugin.bash
+PROTO_PATH=${CUR}/idl
+PROTO_INCLUDE_PATH_1="${CUR}/idl"
+
+# go
+${GEN_TOOL} \
+  --proto_path=${PROTO_PATH} \
+  --proto_include_path=${PROTO_INCLUDE_PATH_1} \
+  --plugin_name=go \
+  --plugin_out=${LANG_OUT} \
+  --plugin_opt=paths=source_relative
+# grpc
+${GEN_TOOL} \
+  --proto_path=${PROTO_PATH} \
+  --proto_include_path=${PROTO_INCLUDE_PATH_1} \
+  --plugin_name=go-grpc \
+  --plugin_out=${LANG_OUT} \
+  --plugin_opt=paths=source_relative
+# go-micro
+${GEN_TOOL} \
+  --proto_path=${PROTO_PATH} \
+  --proto_include_path=${PROTO_INCLUDE_PATH_1} \
+  --plugin_name=micro \
+  --plugin_out=${LANG_OUT} \
+  --plugin_opt=paths=source_relative
+```
+
+## go、grpc、micro文件：
+
+#### go:
+
+在go文件中主要包含结构的定义
+
+#### Grpc:
+
+grpc中则是定义了客户端接口和对应结构体，以及生成客户端对象的方法
+
+服务端只有接口
+
+#### micro：
+
+其中则包含了客户端和服务端的接口以及结构体和对象生成，同时对服务端的方法进行了实现
 
 ### use gRPC with TLS in go
 
